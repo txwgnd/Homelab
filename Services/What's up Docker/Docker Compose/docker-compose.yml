@@ -1,0 +1,20 @@
+services:
+  whatsupdocker:
+    image: getwud/wud:main
+    user: 568:999
+    container_name: wud
+    volumes:
+      - /mnt/Main/Docker/Whats-up-Docker/Store:/store
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 3000:3000
+    environment:
+      - WUD_PUBLIC_URL=[REDACTED]
+      - WUD_AUTH_OIDC_pocket-id_CLIENTID=[REDACTED]
+      - WUD_AUTH_OIDC_pocket-id_CLIENTSECRET=[REDACTED]
+      - WUD_AUTH_OIDC_pocket-id_DISCOVERY=[REDACTED]
+      - WUD_AUTH_OIDC_pocket-id_REDIRECT=true
+      - WUD_AUTH_OIDC_pocket-id_TIMEOUT=5000
+      - TZ=Europe/Berlin
+    restart: unless-stopped
+networks: {}
