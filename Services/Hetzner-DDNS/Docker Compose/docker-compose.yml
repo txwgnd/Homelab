@@ -1,0 +1,24 @@
+services:
+  hetzner-ddns-ipv4:
+    image: kutzilla/hetzner-ddns:2.1
+    user: 568:999
+    environment:
+      - ZONE_NAME=[REDACTED]
+      - API_TOKEN=[REDACTED]
+      - RECORD_NAME=[REDACTED] # 'sub' for 'sub.domain.com'
+      - RECORD_TYPE=A # 'A' or 'AAAA'
+      - CRON_EXPRESSION=*/5 * * * * # Standard is 5 minutes
+      - TTL=3600 # TTL for DNS-Entry
+    restart: unless-stopped
+  hetzner-ddns-ipv6:
+    image: kutzilla/hetzner-ddns:2.1
+    user: 568:999
+    environment:
+      - ZONE_NAME=[REDACTED]
+      - API_TOKEN=[REDACTED]
+      - RECORD_NAME=[REDACTED] # 'sub' for 'sub.domain.com'
+      - RECORD_TYPE=AAAA # 'A' or 'AAAA'
+      - CRON_EXPRESSION=*/5 * * * * # Standard is 5 minutes
+      - TTL=3600 # TTL for DNS-Entry
+    restart: unless-stopped
+networks: {}
