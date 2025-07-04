@@ -1,0 +1,56 @@
+services:
+  broker:
+    image: docker.io/library/redis:8
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+  db:
+    image: docker.io/library/postgres:17
+    restart: unless-stopped
+    volumes:
+      - /mnt/Main/Docker/Paperless-ngx/PGdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: [REDACTED]
+      POSTGRES_USER: [REDACTED]
+      POSTGRES_PASSWORD: [REDACTED]
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.16.1
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+      - gotenberg
+      - tika
+    ports:
+      - 9090:8000
+    volumes:
+      - /mnt/Main/Docker/Paperless-ngx/Data:/usr/src/paperless/data
+      - /mnt/Main/Docker/Paperless-ngx/Media:/usr/src/paperless/media
+      - /mnt/Main/Docker/Paperless-ngx/Export:/usr/src/paperless/export
+      - /mnt/Main/Docker/Paperless-ngx/Consume:/usr/src/paperless/consume
+      - /mnt/Main/Docker/Paperless-ngx/Trash:/usr/src/paperless/trash
+    env_file: docker-compose.env
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_TIKA_ENABLED: 1
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+  gotenberg:
+    image: docker.io/gotenberg/gotenberg:8.20
+    restart: unless-stopped
+    # The gotenberg chromium route is used to convert .eml files. We do not
+    # want to allow external content like tracking pixels or even javascript.
+    command:
+      - gotenberg
+      - --chromium-disable-javascript=true
+      - --chromium-allow-list=file:///tmp/.*
+  tika:
+    image: docker.io/apache/tika:3.1.0.0
+    restart: unless-stopped
+volumes:
+  data: null
+  media: null
+  pgdata: null
+  redisdata: null
+networks: {}
