@@ -1,0 +1,26 @@
+services:
+  apprise:
+    image: lscr.io/linuxserver/apprise-api:latest
+    container_name: apprise
+    environment:
+      - APPRISE_STATEFUL_MODE=simple
+      - PUID=568
+      - PGID=999
+      #- BASE_URL=
+    ports:
+      - 8000:8000
+    volumes:
+      - /mnt/Main/Docker/Apprise:/opt/apprise/webapp:ro
+      - /mnt/Main/Docker/Apprise/Config:/config:rw
+      # if uncommenting the below, you will need to type the following
+      # Note: if you opt for bind mount config file consider setting env var APPRISE_STATEFUL_MODE to simple with appropriate file format
+      # otherwise the django instance won't have permissions to write
+      # to the directory correctly:
+      #   $> chown -R 33:33 ./config
+      #   $> chmod -R 775 ./config
+      # - ./config:/config:rw
+      # Note: The attachment directory can be exposed outside of the container if required
+      #   $> chown -R 33:33 ./attach
+      #   $> chmod -R 775 ./attach
+      # - ./attach:/attach:rw
+networks: {}
