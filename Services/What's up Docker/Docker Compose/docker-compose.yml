@@ -16,5 +16,7 @@ services:
       - WUD_AUTH_OIDC_pocket-id_REDIRECT=true
       - WUD_AUTH_OIDC_pocket-id_TIMEOUT=5000
       - TZ=Europe/Berlin
+      - WUD_TRIGGER_APPRISE_LOCAL_URL=[REDACTED]
+      - WUD_TRIGGER_APPRISE_LOCAL_URLS=apprise://....
     restart: unless-stopped
 networks: {}
