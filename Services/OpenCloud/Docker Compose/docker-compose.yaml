@@ -1,0 +1,54 @@
+services:
+  opencloud:
+    image: opencloudeu/opencloud-rolling:latest
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - opencloud init || true; opencloud server
+    environment:
+      - OC_INSECURE=true
+      - PROXY_HTTP_ADDR=0.0.0.0:9200
+      - OC_URL=https://cloud.tom-wiegand.de
+      - OC_LOG_COLOR=true
+      - OC_LOG_PRETTY=true
+      - OC_ADD_RUN_SERVICES=notifications
+      - PROXY_ENABLE_BASIC_AUTH=false
+      - OC_LOG_LEVEL=INFO
+      - NOTIFICATIONS_SMTP_SENDER=[REDACTED]
+      - NOTIFICATIONS_SMTP_HOST=[REDACTED]
+      - NOTIFICATIONS_SMTP_PORT=587
+      - NOTIFICATIONS_SMTP_USERNAME=[REDACTED]
+      - NOTIFICATIONS_SMTP_PASSWORD=[REDACTED]
+      - NOTIFICATIONS_SMTP_INSECURE=false
+      - NOTIFICATIONS_SMTP_AUTHENTICATION=starttls
+      - NOTIFICATIONS_SMTP_ENCRYPTION=none
+      - IDM_CREATE_DEMO_USERS=false
+      - PROXY_TLS=true
+      - FRONTEND_ARCHIVER_MAX_SIZE=10000000000
+      - OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD=false
+      - FRONTEND_OCS_PUBLIC_SHARE_MUST_HAVE_PASSWORD=false
+      - PROXY_CSP_CONFIG_FILE_LOCATION=/etc/opencloud/csp.yaml
+      - OC_OIDC_ISSUER=https://auth.tom-wiegand.de
+      - WEB_OIDC_CLIENT_ID=[REDACTED]
+      - OC_EXCLUDE_RUN_SERVICES=idp
+      - PROXY_OIDC_REWRITE_WELLKNOWN=true
+      - PROXY_USER_OIDC_CLAIM=sub
+      - PROXY_USER_CS3_CLAIM=username
+      - PROXY_AUTOPROVISION_CLAIM_USERNAME=sub
+      - PROXY_AUTOPROVISION_ACCOUNTS=true
+      - GRAPH_USERNAME_MATCH=none
+      - GRAPH_ASSIGN_DEFAULT_USER_ROLE=false
+      - PROXY_ROLE_ASSIGNMENT_DRIVER=oidc
+      - PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM=groups
+      - WEB_OIDC_METADATA_URL=https://auth.tom-wiegand.de/.well-known/openid-configuration
+      - WEB_OIDC_SCOPE=openid profile email groups
+    restart: unless-stopped
+    volumes:
+      - /mnt/Main/Docker/OpenCloud/Config:/etc/opencloud:Z
+      - /mnt/Main/Docker/OpenCloud/Data:/var/lib/opencloud:Z
+      - /mnt/Main/Docker/OpenCloud/Config/csp.yaml:/etc/opencloud/csp.yaml
+      - /mnt/Main/Docker/OpenCloud/Config/proxy.yaml:/etc/opencloud/proxy.yaml
+    ports:
+      - 9200:9200
+networks: {}
