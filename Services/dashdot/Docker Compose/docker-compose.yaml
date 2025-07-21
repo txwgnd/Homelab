@@ -4,6 +4,6 @@ services:
     restart: unless-stopped
     privileged: true
     ports:
-      - '80:3001'
+      - '3001:3001'
     volumes:
-      - /:/mnt/Main/Docker/dashdot:ro
+      - /mnt/Main/Docker/dashdot:/mnt/host:ro
