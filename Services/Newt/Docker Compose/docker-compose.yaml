@@ -4,8 +4,13 @@ services:
     container_name: newt
     restart: unless-stopped
     environment:
-      - PANGOLIN_ENDPOINT=[REDACTED]
+      - PANGOLIN_ENDPOINT=https://pangolin.tom-wiegand.de
       - NEWT_ID=[REDACTED]
       - NEWT_SECRET=[REDACTED]
       - docker-socket=/var/run/docker.sock
-networks: {}
+    networks:
+      - pangolin
+networks:
+  pangolin:
+    name: pangolin
+    driver: bridge

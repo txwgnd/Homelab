@@ -1,0 +1,54 @@
+services:
+  server:
+    image: ghcr.io/bluewave-labs/checkmate-backend-mono:latest
+    container_name: checkmate
+    pull_policy: always
+    restart: always
+    ports:
+      - 52345:52345
+    environment:
+      - UPTIME_APP_API_BASE_URL=https://monitor.tom-wiegand.de/api/v1
+      - UPTIME_APP_CLIENT_HOST=https://monitor.tom-wiegand.de
+      - DB_CONNECTION_STRING=mongodb://mongodb:27017/uptime_db
+      - CLIENT_HOST=http://localhost
+      - JWT_SECRET="[REDACTED]"
+    depends_on:
+      - mongodb
+    networks:
+      - pangolin
+      - checkmate_internal
+  mongodb:
+    image: ghcr.io/bluewave-labs/checkmate-mongo:latest
+    restart: always
+    command:
+      - mongod
+      - --quiet
+      - --bind_ip_all
+    volumes:
+      - Checkmate:/data/db
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --eval
+        - db.adminCommand('ping')
+        - --quiet
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      start_interval: 1s
+      retries: 30
+    networks:
+      - checkmate_internal
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true
+  checkmate_internal:
+    name: checkmate_internal
+    external: false
+
+
+volumes:
+  Checkmate:

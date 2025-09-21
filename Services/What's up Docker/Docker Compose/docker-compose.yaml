@@ -1,6 +1,6 @@
 services:
   whatsupdocker:
-    image: getwud/wud:main
+    image: getwud/wud:8.1.0
     user: 568:999
     container_name: wud
     volumes:
@@ -9,14 +9,19 @@ services:
     ports:
       - 3000:3000
     environment:
-      - WUD_PUBLIC_URL=[REDACTED]
+      - WUD_PUBLIC_URL=https://wud.tom-wiegand.de
       - WUD_AUTH_OIDC_pocket-id_CLIENTID=[REDACTED]
       - WUD_AUTH_OIDC_pocket-id_CLIENTSECRET=[REDACTED]
       - WUD_AUTH_OIDC_pocket-id_DISCOVERY=[REDACTED]
       - WUD_AUTH_OIDC_pocket-id_REDIRECT=true
       - WUD_AUTH_OIDC_pocket-id_TIMEOUT=5000
       - TZ=Europe/Berlin
-      - WUD_TRIGGER_APPRISE_LOCAL_URL=[REDACTED]
-      - WUD_TRIGGER_APPRISE_LOCAL_URLS=apprise://....
+      - WUD_TRIGGER_APPRISE_LOCAL_URL=http://10.0.0.45:8000
+      - WUD_TRIGGER_APPRISE_LOCAL_URLS=apprise://10.0.0.45:8000/admin/?tags=all
     restart: unless-stopped
-networks: {}
+    networks:
+      - pangolin
+networks:
+  pangolin:
+    name: pangolin
+    external: true
